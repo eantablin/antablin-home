@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Antablin Family</title>
+    <meta name="description" content="The Antablin family hub — connecting you to our personal spaces on the web.">
+    <meta property="og:title" content="The Antablin Family">
+    <meta property="og:description" content="Welcome to the Antablin family hub.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.antablin.com">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="The Antablin Family">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230d1117'/><rect x='2' y='2' width='60' height='60' rx='10' fill='none' stroke='%23c9a84c' stroke-width='2' opacity='0.5'/><text x='32' y='43' font-family='serif' font-weight='700' font-size='30' fill='%23c9a84c' text-anchor='middle'>A</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700&family=Raleway:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8d5a3;
+            --gold-dim: rgba(201, 168, 76, 0.15);
+            --bg: #0d1117;
+            --bg-card: rgba(13, 17, 23, 0.8);
+            --text: #d1d5db;
+            --text-dim: #6b7280;
+            --border: rgba(201, 168, 76, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Raleway', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Subtle gold gradient orb */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(201, 168, 76, 0.06) 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: breathe 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes breathe {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+            100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            max-width: 580px;
+            width: 100%;
+            padding: 60px 30px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Monogram */
+        .monogram {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            font-size: 4.5rem;
+            color: var(--gold);
+            letter-spacing: 6px;
+            margin-bottom: 8px;
+            line-height: 1;
+            text-shadow: 0 0 40px rgba(201, 168, 76, 0.2);
+        }
+
+        .family-name {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 300;
+            font-size: 1.1rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 40px;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 0 auto 40px;
+        }
+
+        /* Family member links */
+        .members {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 50px;
+        }
+
+        .member-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            text-decoration: none !important;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .member-link:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.1);
+            color: var(--gold-light);
+            transform: translateY(-2px);
+            border-bottom: 1px solid var(--gold);
+            text-shadow: none;
+        }
+
+        .member-link .arrow {
+            font-size: 13px;
+            color: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+
+        .member-link:hover .arrow {
+            color: var(--gold);
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        .footer {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 300;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+        }
+
+        /* Selection */
+        ::selection {
+            background: rgba(201, 168, 76, 0.25);
+            color: #fff;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .monogram { font-size: 3.5rem; }
+            .family-name { font-size: 0.95rem; letter-spacing: 6px; }
+            .container { padding: 40px 20px; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: rgba(201, 168, 76, 0.3); border-radius: 2px; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="monogram">A</div>
+        <div class="family-name">Antablin</div>
+        <div class="divider"></div>
+
+        <div class="members">
+            <a href="https://emanuel.antablin.com" class="member-link">
+                Emanuel <span class="arrow">&rarr;</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            &copy; <script>document.write(new Date().getFullYear())</script> Antablin
+        </div>
+    </div>
+</body>
+</html>
