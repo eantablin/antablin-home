@@ -1,0 +1,5 @@
+# Local Claude Code tooling / preview config
+.claude/
+
+# macOS
+.DS_Store

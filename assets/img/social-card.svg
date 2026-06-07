@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="'Space Grotesk', system-ui, sans-serif">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecd7a0"/>
+      <stop offset="1" stop-color="#c9a84c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="38%" r="60%">
+      <stop offset="0" stop-color="#c9a84c" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#c9a84c" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#8caad2" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0a0e16"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="40" y="40" width="1120" height="550" fill="none" stroke="#c9a84c" stroke-opacity="0.22" stroke-width="1.5"/>
+
+  <!-- corner ticks -->
+  <g stroke="#c9a84c" stroke-opacity="0.5" stroke-width="2">
+    <path d="M40 70 V40 H70" fill="none"/>
+    <path d="M1130 40 H1160 V70" fill="none"/>
+    <path d="M40 560 V590 H70" fill="none"/>
+    <path d="M1130 590 H1160 V560" fill="none"/>
+  </g>
+
+  <!-- monogram -->
+  <g transform="translate(150 315)">
+    <g fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="0" cy="0" r="96" stroke-width="2.5" stroke-opacity="0.55"/>
+      <path d="M-40 60 L0 -52 L40 60" stroke-width="9"/>
+      <path d="M-22 26 L22 26" stroke-width="9"/>
+    </g>
+    <g fill="#ecd7a0">
+      <circle cx="0" cy="-52" r="6"/>
+      <circle cx="-40" cy="60" r="6"/>
+      <circle cx="40" cy="60" r="6"/>
+    </g>
+  </g>
+
+  <!-- text -->
+  <text x="320" y="250" fill="#c9a84c" font-family="'JetBrains Mono', monospace" font-size="22" letter-spacing="8">THE ANTABLIN FAMILY</text>
+  <text x="318" y="360" fill="url(#gold)" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="104" letter-spacing="2">ANTABLIN</text>
+  <text x="320" y="430" fill="#e9e6dc" font-family="Georgia, serif" font-style="italic" font-size="38">Two disciplines. One foundation.</text>
+  <text x="320" y="486" fill="#8a93a6" font-size="24">Software &amp; structures, built to last.</text>
+
+  <text x="320" y="560" fill="#545d72" font-family="'JetBrains Mono', monospace" font-size="18" letter-spacing="3">emanuel.antablin.com  ·  richard.antablin.com</text>
+</svg>

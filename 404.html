@@ -1,62 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Not Found — Antablin</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230d1117'/><rect x='2' y='2' width='60' height='60' rx='10' fill='none' stroke='%23c9a84c' stroke-width='2' opacity='0.5'/><text x='32' y='43' font-family='serif' font-weight='700' font-size='30' fill='%23c9a84c' text-anchor='middle'>A</text></svg>">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Raleway:wght@300;400&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0d1117;
-            color: #d1d5db;
-            font-family: 'Raleway', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        .code {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 6rem;
-            font-weight: 700;
-            color: #c9a84c;
-            text-shadow: 0 0 30px rgba(201, 168, 76, 0.2);
-            line-height: 1;
-            margin-bottom: 12px;
-        }
-        .msg {
-            font-weight: 300;
-            font-size: 1rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #6b7280;
-            margin-bottom: 30px;
-        }
-        a {
-            color: #c9a84c;
-            text-decoration: none;
-            font-weight: 400;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-size: 14px;
-            border-bottom: 1px solid rgba(201, 168, 76, 0.3);
-            padding-bottom: 2px;
-            transition: all 0.3s ease;
-        }
-        a:hover {
-            border-color: #c9a84c;
-            text-shadow: 0 0 10px rgba(201, 168, 76, 0.3);
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0e16" />
+  <title>404 — Off the blueprint · Antablin</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,300&family=Space+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0a0e16; --gold: #c9a84c; --gold-bright: #ecd7a0;
+      --text: #e9e6dc; --muted: #8a93a6; --faint: #545d72;
+      --grid: rgba(140,170,210,0.05);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--ink); color: var(--text);
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      min-height: 100vh; min-height: 100svh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden; position: relative; padding: 24px;
+    }
+    body::before {
+      content: ""; position: fixed; inset: -10vmax; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 50%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 50%, transparent 100%);
+    }
+    .panel { position: relative; z-index: 1; }
+    .tag {
+      font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
+    }
+    .code {
+      font-family: "Fraunces", serif; font-weight: 600; line-height: .9;
+      font-size: clamp(5rem, 22vw, 11rem); letter-spacing: 2px;
+      background: linear-gradient(180deg, #fff, var(--gold-bright) 55%, var(--gold));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 8px 40px rgba(201,168,76,0.18)); margin-bottom: 6px;
+    }
+    .msg {
+      font-family: "Fraunces", serif; font-style: italic; font-weight: 300;
+      font-size: clamp(1.1rem, 3vw, 1.6rem); color: var(--muted); margin-bottom: 36px;
+    }
+    a {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 26px; border: 1px solid rgba(201,168,76,0.34);
+      color: var(--text); text-decoration: none; font-weight: 500; font-size: 14px;
+      letter-spacing: .5px; border-radius: 2px; transition: all .35s cubic-bezier(.22,1,.36,1);
+    }
+    a:hover { border-color: var(--gold); color: var(--gold-bright); background: rgba(201,168,76,0.08); }
+    a svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .draw {
+      position: fixed; bottom: 24px; left: 0; right: 0; z-index: 1;
+      font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 2px; color: var(--faint);
+    }
+  </style>
 </head>
 <body>
-    <div>
-        <div class="code">404</div>
-        <p class="msg">Page not found</p>
-        <a href="/">Return Home</a>
-    </div>
+  <div class="panel">
+    <p class="tag">ERROR · SHEET NOT FOUND</p>
+    <div class="code">404</div>
+    <p class="msg">This page is off the blueprint.</p>
+    <a href="/">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Return to the drawing board
+    </a>
+  </div>
+  <p class="draw">DRAWING A-001 · REV. A · antablin.com</p>
 </body>
 </html>
