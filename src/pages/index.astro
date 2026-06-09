@@ -1,0 +1,139 @@
+---
+import Base from "../layouts/Base.astro";
+import Member from "../components/Member.astro";
+import { family, members, familyStats } from "../data/family";
+
+const accents = JSON.stringify(members.map((m) => m.accent));
+
+const title =
+  "The Antablin Family — AI Engineering, Structural Engineering & Biochemistry";
+const description =
+  "The Antablin family portfolio hub: Emanuel, AI engineer building agentic & LLM systems; Richard, structural & project engineer (EIT); and Alexandra, biochemist and marine-science enthusiast. Three fields, one family.";
+---
+
+<Base title={title} description={description} path="/" structuredData={true}>
+  <main id="main">
+    <!-- ---------- HERO ---------- -->
+    <section class="hero" id="top">
+      <canvas
+        class="hero__canvas"
+        id="hero-canvas"
+        aria-hidden="true"
+        data-accents={accents}></canvas>
+
+      <div class="hero__frame" aria-hidden="true">
+        <span class="hero__corner hero__corner--tl"></span>
+        <span class="hero__corner hero__corner--tr"></span>
+        <span class="hero__corner hero__corner--bl"></span>
+        <span class="hero__corner hero__corner--br"></span>
+      </div>
+
+      <div class="hero__content">
+        <p class="kicker reveal"><span class="kicker__line"></span>THE&nbsp;ANTABLIN&nbsp;FAMILY</p>
+        <h1 class="hero__title reveal" style="--i:0">ANTABLIN</h1>
+        <p class="hero__tagline reveal" style="--i:1">
+          Three fields. <em>One family.</em>
+        </p>
+        <p class="hero__sub reveal" style="--i:2">
+          A family putting their work online — AI that runs in production,
+          structures built to last, and science that starts at the bench.
+        </p>
+        <ul class="hero__fields reveal" style="--i:3">
+          <li class="hero__field" style="--dot:#46e0ff">Artificial Intelligence</li>
+          <li class="hero__field" style="--dot:#f2a14b">Structural Engineering</li>
+          <li class="hero__field" style="--dot:#8f9bff">Biochemistry</li>
+        </ul>
+        <div class="hero__cta reveal" style="--i:4">
+          <a class="btn btn--primary magnetic" href="#people" data-cursor="enter">
+            <span>Meet the family</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+          <a class="btn btn--ghost magnetic" href="#family" data-cursor="learn more">
+            <span>About the family</span>
+          </a>
+        </div>
+      </div>
+
+      <span class="anno anno--tl" aria-hidden="true">AI · STRUCTURES · SCIENCE</span>
+      <span class="anno anno--tr" aria-hidden="true">EST. 2026</span>
+      <span class="anno anno--bl" aria-hidden="true">THREE PORTFOLIOS · ONE NAME</span>
+      <span class="anno anno--br" aria-hidden="true">ANTABLIN.COM</span>
+
+      <a class="scroll-cue" href="#family" aria-label="Scroll down" data-cursor="scroll">
+        <span class="scroll-cue__txt">SCROLL</span>
+        <span class="scroll-cue__line"></span>
+      </a>
+    </section>
+
+    <!-- ---------- THE FAMILY ---------- -->
+    <section class="section family" id="family">
+      <div class="section__index" aria-hidden="true">001</div>
+      <div class="wrap">
+        <p class="kicker reveal"><span class="kicker__line"></span>001 — THE FAMILY</p>
+        <h2 class="section__title reveal" style="--i:1">
+          Different disciplines.<br /><em>The same first principles.</em>
+        </h2>
+        <div class="family__grid">
+          <p class="family__lede reveal" style="--i:2">
+            The Antablins build in different materials — <strong>code, concrete, and
+            the chemistry of life</strong> — but with the same instincts: precision,
+            curiosity, and work made to last. This page is where their worlds meet,
+            and where you can find each of them.
+          </p>
+
+          <div class="stats" role="list">
+            {
+              familyStats.map((st, i) => (
+                <div class="stat reveal" style={`--i:${i + 3}`} role="listitem">
+                  <span class="stat__num" data-count={st.value}>0</span>
+                  <span class="stat__label">{st.label}</span>
+                  <span class="stat__sub">{st.sub}</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- THE MAKERS ---------- -->
+    <section class="section people" id="people">
+      <div class="section__index" aria-hidden="true">002</div>
+      <div class="wrap">
+        <div class="people__head">
+          <p class="kicker reveal"><span class="kicker__line"></span>002 — THE MAKERS</p>
+          <h2 class="section__title reveal" style="--i:1">Meet the family</h2>
+          <p class="people__lede reveal" style="--i:2">
+            Three people, three disciplines — each with their own portfolio.
+            Read the highlights here, then step into their work.
+          </p>
+        </div>
+
+        <div class="makers">
+          {members.map((m, i) => <Member member={m} index={i} total={members.length} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- CONTACT ---------- -->
+    <section class="section contact" id="contact">
+      <div class="section__index" aria-hidden="true">003</div>
+      <div class="wrap contact__wrap">
+        <p class="kicker reveal"><span class="kicker__line"></span>003 — CONTACT</p>
+        <h2 class="section__title reveal" style="--i:1">Let's build <em>something</em>.</h2>
+        <p class="contact__lede reveal" style="--i:2">
+          For the family, or for any one of us individually — we'd love to hear from you.
+        </p>
+        <a
+          class="btn btn--primary btn--lg magnetic reveal"
+          style="--i:3"
+          href={`mailto:${family.email}`}
+          data-cursor="email us"
+        >
+          <span>{family.email}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6" /></svg>
+        </a>
+      </div>
+    </section>
+  </main>
+</Base>

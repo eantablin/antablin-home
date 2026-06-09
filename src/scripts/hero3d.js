@@ -1,12 +1,13 @@
 /* =====================================================================
    hero3d.js — the WebGL centerpiece.
-   A rotating wireframe structure (gold "node diagram") inside a faint
-   boundary lattice, wrapped in a drifting particle field. Optional bloom
-   on capable devices. Pauses when offscreen or the tab is hidden.
+   A gold "family" node-cluster at the center, orbited by three small
+   accent-colored satellites — one per field (AI · structures · science) —
+   inside a faint boundary lattice and a drifting particle field. Optional
+   bloom on capable devices. Pauses when offscreen or the tab is hidden.
    ===================================================================== */
 
 export async function initHero(canvas, options = {}) {
-  const { reduce = false, lowPower = false } = options;
+  const { reduce = false, lowPower = false, accents = [] } = options;
   const THREE = await import("three");
 
   const renderer = new THREE.WebGLRenderer({
@@ -20,7 +21,7 @@ export async function initHero(canvas, options = {}) {
   renderer.toneMappingExposure = 1.05;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x0a0e16, 0.052);
+  scene.fog = new THREE.FogExp2(0x0a0e16, 0.05);
 
   const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 100);
   camera.position.set(0, 0, 9);
@@ -28,14 +29,14 @@ export async function initHero(canvas, options = {}) {
   const COL_GOLD = new THREE.Color(0xc9a84c);
   const COL_GOLD_BRIGHT = new THREE.Color(0xecd7a0);
 
-  // ---- core structure: icosahedron wireframe + vertex nodes ----
+  // ---- core "family" structure: icosahedron wireframe + vertex nodes ----
   const group = new THREE.Group();
   scene.add(group);
 
-  const coreGeo = new THREE.IcosahedronGeometry(3, 1);
+  const coreGeo = new THREE.IcosahedronGeometry(2.7, 1);
   const core = new THREE.LineSegments(
     new THREE.EdgesGeometry(coreGeo),
-    new THREE.LineBasicMaterial({ color: COL_GOLD, transparent: true, opacity: 0.72 })
+    new THREE.LineBasicMaterial({ color: COL_GOLD, transparent: true, opacity: 0.5 })
   );
   group.add(core);
 
@@ -54,17 +55,65 @@ export async function initHero(canvas, options = {}) {
   );
   group.add(nodes);
 
-  // a small inner tetra spinning the other way, for depth
   const innerCore = new THREE.LineSegments(
-    new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.4, 0)),
-    new THREE.LineBasicMaterial({ color: COL_GOLD_BRIGHT, transparent: true, opacity: 0.5 })
+    new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.25, 0)),
+    new THREE.LineBasicMaterial({ color: COL_GOLD_BRIGHT, transparent: true, opacity: 0.32 })
   );
   group.add(innerCore);
 
+  // ---- three orbiting satellites, one per field ----
+  const palette =
+    accents.length === 3 ? accents : ["#46e0ff", "#f2a14b", "#8f9bff"];
+  const satellites = palette.map((hex, i) => {
+    const color = new THREE.Color(hex);
+    const sat = new THREE.Group();
+
+    const shell = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(0.42, 0)),
+      new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.85 })
+    );
+    const dot = new THREE.Points(
+      new THREE.BufferGeometry().setAttribute(
+        "position",
+        new THREE.BufferAttribute(new Float32Array([0, 0, 0]), 3)
+      ),
+      new THREE.PointsMaterial({
+        color,
+        size: 0.34,
+        transparent: true,
+        opacity: 0.95,
+        sizeAttenuation: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      })
+    );
+    sat.add(shell, dot);
+
+    // a faint connecting tether back toward the core
+    const link = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+      ]),
+      new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.16 })
+    );
+    scene.add(link);
+
+    scene.add(sat);
+    return {
+      sat,
+      link,
+      radius: 4.5,
+      speed: 0.22 + i * 0.05,
+      phase: (i / 3) * Math.PI * 2,
+      tilt: 0.5 + i * 0.5,
+    };
+  });
+
   // ---- outer boundary lattice ----
   const boundary = new THREE.LineSegments(
-    new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(5.4, 1)),
-    new THREE.LineBasicMaterial({ color: COL_GOLD, transparent: true, opacity: 0.1 })
+    new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(5.6, 1)),
+    new THREE.LineBasicMaterial({ color: COL_GOLD, transparent: true, opacity: 0.09 })
   );
   scene.add(boundary);
 
@@ -85,7 +134,7 @@ export async function initHero(canvas, options = {}) {
       color: 0x9fb6d4,
       size: 0.05,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.5,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       sizeAttenuation: true,
@@ -99,16 +148,14 @@ export async function initHero(canvas, options = {}) {
     try {
       const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }] =
         await Promise.all([
-          import("three/addons/postprocessing/EffectComposer.js"),
-          import("three/addons/postprocessing/RenderPass.js"),
-          import("three/addons/postprocessing/UnrealBloomPass.js"),
-          import("three/addons/postprocessing/OutputPass.js"),
+          import("three/examples/jsm/postprocessing/EffectComposer.js"),
+          import("three/examples/jsm/postprocessing/RenderPass.js"),
+          import("three/examples/jsm/postprocessing/UnrealBloomPass.js"),
+          import("three/examples/jsm/postprocessing/OutputPass.js"),
         ]);
       composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
-      composer.addPass(
-        new UnrealBloomPass(new THREE.Vector2(1, 1), 0.62, 0.5, 0.18)
-      );
+      composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.6, 0.5, 0.18));
       composer.addPass(new OutputPass());
       composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     } catch (e) {
@@ -122,6 +169,7 @@ export async function initHero(canvas, options = {}) {
   let running = false;
   let raf = 0;
   const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
+  const tmp = new THREE.Vector3();
 
   function resize() {
     const w = canvas.clientWidth || canvas.offsetWidth;
@@ -138,6 +186,23 @@ export async function initHero(canvas, options = {}) {
     composer ? composer.render() : renderer.render(scene, camera);
   }
 
+  function positionSatellites(t) {
+    satellites.forEach((s) => {
+      const a = t * s.speed + s.phase;
+      const x = Math.cos(a) * s.radius;
+      const z = Math.sin(a) * s.radius;
+      const y = Math.sin(a * 1.3) * s.tilt;
+      s.sat.position.set(x, y, z);
+      s.sat.rotation.y = a * 2;
+      s.sat.rotation.x = a;
+      // update tether endpoints
+      const p = s.link.geometry.attributes.position;
+      tmp.set(x, y, z);
+      p.setXYZ(1, tmp.x, tmp.y, tmp.z);
+      p.needsUpdate = true;
+    });
+  }
+
   function tick() {
     elapsed += clock.getDelta();
     const t = elapsed;
@@ -152,6 +217,7 @@ export async function initHero(canvas, options = {}) {
     boundary.rotation.y = -t * 0.05;
     boundary.rotation.z = t * 0.03;
     field.rotation.y = t * 0.018;
+    positionSatellites(t);
 
     camera.position.x += (ptr.x * 0.8 - camera.position.x) * 0.04;
     camera.position.y += (-ptr.y * 0.6 - camera.position.y) * 0.04;
@@ -197,6 +263,7 @@ export async function initHero(canvas, options = {}) {
   canvas.classList.add("is-ready");
   if (reduce) {
     group.rotation.set(-0.18, 0.5, 0);
+    positionSatellites(2.2);
     render();
   } else {
     start();

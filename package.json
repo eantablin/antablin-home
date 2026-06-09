@@ -1,0 +1,19 @@
+{
+  "name": "antablin-home",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The Antablin family portfolio hub — antablin.com. Astro static site, deployed to GitHub Pages via Actions.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.2.5",
+    "three": "^0.160.1"
+  }
+}

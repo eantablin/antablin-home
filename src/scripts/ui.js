@@ -8,7 +8,7 @@ const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
 /* ---------- footer year ---------- */
 export function setYear() {
   const y = document.getElementById("year");
-  if (y) y.textContent = new Date().getFullYear();
+  if (y) y.textContent = String(new Date().getFullYear());
 }
 
 /* ---------- preloader ---------- */
@@ -19,7 +19,7 @@ export function initPreloader() {
   const barEl = document.getElementById("preBar");
 
   const start = performance.now();
-  const minDur = REDUCE ? 400 : 1900;
+  const minDur = REDUCE ? 400 : 1800;
   let fontsReady = false;
   let done = false;
 
@@ -89,9 +89,10 @@ export function initNav() {
 
   // active-section underline
   const linkMap = new Map();
-  document.querySelectorAll(".nav__links a").forEach((a) =>
-    linkMap.set(a.getAttribute("href").replace("#", ""), a)
-  );
+  document.querySelectorAll(".nav__links a").forEach((a) => {
+    const href = a.getAttribute("href") || "";
+    if (href.startsWith("#")) linkMap.set(href.slice(1), a);
+  });
   const sections = [...linkMap.keys()]
     .map((id) => document.getElementById(id))
     .filter(Boolean);
@@ -155,15 +156,25 @@ export function initReveal() {
   els.forEach((e) => io.observe(e));
 }
 
-/* ---------- count-up stats ---------- */
+/* ---------- count-up stats ----------
+   Numeric stats carry data-count (+ optional data-prefix/suffix/decimals).
+   String stats render statically and are simply skipped here.            */
 export function initStats() {
-  const nums = document.querySelectorAll(".stat__num");
+  const nums = document.querySelectorAll(".stat__num[data-count]");
   if (!nums.length) return;
 
+  const fmt = (v, decimals) =>
+    decimals > 0 ? v.toFixed(decimals) : String(Math.round(v));
+
   const run = (el) => {
-    const target = parseInt(el.dataset.count, 10) || 0;
+    const target = parseFloat(el.dataset.count) || 0;
+    const decimals = parseInt(el.dataset.decimals || "0", 10);
+    const prefix = el.dataset.prefix || "";
+    const suffix = el.dataset.suffix || "";
+    const paint = (n) => (el.textContent = prefix + fmt(n, decimals) + suffix);
+
     if (REDUCE) {
-      el.textContent = String(target);
+      paint(target);
       return;
     }
     const dur = 1100;
@@ -171,7 +182,7 @@ export function initStats() {
     const step = (now) => {
       const t = Math.min(1, (now - t0) / dur);
       const eased = 1 - Math.pow(1 - t, 3);
-      el.textContent = String(Math.round(eased * target));
+      paint(eased * target);
       if (t < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -216,7 +227,7 @@ export function initMagnetic() {
 export function initTilt() {
   if (!FINE || REDUCE) return;
   document.querySelectorAll(".tilt").forEach((card) => {
-    const max = 6.5;
+    const max = 5;
     card.addEventListener("pointermove", (e) => {
       const r = card.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width;
@@ -233,7 +244,7 @@ export function initTilt() {
   });
 }
 
-/* ---------- custom draftsman cursor ---------- */
+/* ---------- custom cursor (desktop / fine pointer only) ---------- */
 export function initCursor() {
   if (!FINE || REDUCE) return;
   const cursor = document.getElementById("cursor");
@@ -276,10 +287,14 @@ export function initCursor() {
   document.querySelectorAll("a, button, [data-cursor]").forEach((t) => {
     t.addEventListener("pointerenter", () => {
       document.body.classList.add("cursor-active");
+      // accent the cursor to the hovered element's field, if any
+      const accent = getComputedStyle(t).getPropertyValue("--accent").trim();
+      cursor.style.setProperty("--cursor-accent", accent || "");
       label.textContent = t.getAttribute("data-cursor") || "";
     });
     t.addEventListener("pointerleave", () => {
       document.body.classList.remove("cursor-active");
+      cursor.style.removeProperty("--cursor-accent");
       label.textContent = "";
     });
   });
@@ -288,7 +303,7 @@ export function initCursor() {
   document.addEventListener("mouseenter", () => (cursor.style.opacity = "1"));
 }
 
-/* ---------- blueprint grid parallax ---------- */
+/* ---------- background grid parallax ---------- */
 export function initGridParallax() {
   if (!FINE || REDUCE) return;
   const grid = document.querySelector(".bp-grid");

@@ -1,0 +1,127 @@
+---
+import type { Member } from "../data/family";
+
+interface Props {
+  member: Member;
+  index: number;
+  total: number;
+}
+const { member, index, total } = Astro.props;
+const no = String(index + 1).padStart(2, "0");
+const tot = String(total).padStart(2, "0");
+
+// Small field motifs drawn under the initial, colored by --accent via CSS.
+const glyphs: Record<Member["motif"], string> = {
+  neural:
+    '<path class="ink" d="M50 95 L60 87 L70 95" /><circle class="node" cx="50" cy="95" r="2.4"/><circle class="node" cx="70" cy="95" r="2.4"/><circle class="node" cx="60" cy="87" r="2.6"/>',
+  structure:
+    '<path class="ink" d="M48 96 L60 84 L72 96 Z M54 90 L66 90" /><circle class="node" cx="60" cy="84" r="2.4"/>',
+  ocean:
+    '<path class="ink" d="M46 92 q6 -8 12 0 t12 0" /><circle class="node" cx="46" cy="92" r="2.2"/><circle class="node" cx="70" cy="92" r="2.2"/>',
+};
+
+// Inline social icons (currentColor-filled).
+const icons: Record<string, string> = {
+  github:
+    "M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.7.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 5.3 18 5.6 18 5.6c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z",
+  linkedin:
+    "M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z",
+  email:
+    "M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z",
+};
+---
+
+<article
+  class="member tilt reveal"
+  style={`--accent:${member.accent};--accent-soft:${member.accentSoft}`}
+  data-cursor={`visit ${member.shortName.toLowerCase()} →`}
+>
+  <div class="member__rail">
+    <span class="member__no">{no} / {tot}</span>
+
+    <span class="member__avatar">
+      {
+        member.photo ? (
+          <img src={member.photo} alt={member.name} width="96" height="96" loading="lazy" />
+        ) : (
+          <>
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="frame" cx="60" cy="60" r="54" />
+              <Fragment set:html={glyphs[member.motif]} />
+            </svg>
+            <span class="member__initial">{member.initial}</span>
+          </>
+        )
+      }
+    </span>
+
+    <p class="member__role">{member.role}</p>
+    <h3 class="member__name">{member.shortName}</h3>
+    <p class="member__tag">{member.tag}</p>
+    <p class="member__affil">{member.affiliation}</p>
+
+    <div class="member__actions">
+      <a class="btn btn--accent magnetic" href={member.url} data-cursor="enter">
+        <span>Visit {member.shortName}'s site</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </a>
+      {
+        member.socials.length > 0 && (
+          <div class="member__socials">
+            {member.socials.map((s) => (
+              <a
+                class="member__social"
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${member.shortName} on ${s.label}`}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={icons[s.icon]} />
+                </svg>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  <div class="member__body">
+    <p class="member__bio">{member.blurb}</p>
+
+    <div class="member__stats">
+      {
+        member.stats.map((st) => {
+          const numeric = typeof st.value === "number";
+          return (
+            <div class="mstat">
+              {numeric ? (
+                <span
+                  class="mstat__num stat__num"
+                  data-count={st.value}
+                  data-prefix={st.prefix ?? ""}
+                  data-suffix={st.suffix ?? ""}
+                  data-decimals={st.decimals ?? 0}
+                >
+                  {(st.prefix ?? "") + "0" + (st.suffix ?? "")}
+                </span>
+              ) : (
+                <span class="mstat__num stat__num stat__num--text">{st.value}</span>
+              )}
+              <span class="mstat__label">{st.label}</span>
+              <span class="mstat__sub">{st.sub}</span>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <div>
+      <p class="member__skills-label">Core skills</p>
+      <div class="chips">
+        {member.skills.map((skill) => <span class="chip">{skill}</span>)}
+      </div>
+    </div>
+  </div>
+</article>

@@ -6,9 +6,10 @@
     <path d="M42 86 L60 38 L78 86" stroke-width="6"/>
     <path d="M50 70 L70 70" stroke-width="6"/>
   </g>
-  <g fill="#ecd7a0">
-    <circle cx="60" cy="38" r="3"/>
-    <circle cx="42" cy="86" r="3"/>
-    <circle cx="78" cy="86" r="3"/>
+  <!-- three nodes, tinted to the three fields: AI · structures · science -->
+  <g>
+    <circle cx="60" cy="38" r="3.4" fill="#46e0ff"/>
+    <circle cx="42" cy="86" r="3.4" fill="#f2a14b"/>
+    <circle cx="78" cy="86" r="3.4" fill="#8f9bff"/>
   </g>
 </svg>

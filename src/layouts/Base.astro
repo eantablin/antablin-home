@@ -1,0 +1,127 @@
+---
+import "../styles/global.css";
+import Seo from "../components/Seo.astro";
+import Monogram from "../components/Monogram.astro";
+import { family, nav } from "../data/family";
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  noindex?: boolean;
+  structuredData?: boolean;
+  /** hide the shared nav/footer chrome (used by the standalone preview) */
+  bare?: boolean;
+}
+const {
+  title,
+  description,
+  path = "/",
+  noindex = false,
+  structuredData = false,
+  bare = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0e16" />
+
+    <Seo
+      title={title}
+      description={description}
+      path={path}
+      noindex={noindex}
+      structuredData={structuredData}
+    />
+
+    <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Fonts: Fraunces (display serif) · Space Grotesk (UI) · JetBrains Mono (technical) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,500&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- preloader -->
+    <div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="Loading">
+      <div class="preloader__inner">
+        <Monogram variant="draw" />
+        <div class="preloader__meta">
+          <span class="preloader__label">ANTABLIN&nbsp;FAMILY</span>
+          <span class="preloader__count" id="preCount">00</span>
+        </div>
+        <div class="preloader__bar"><span class="preloader__bar-fill" id="preBar"></span></div>
+      </div>
+    </div>
+
+    <!-- fixed overlays -->
+    <div class="bp-grid" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div class="cursor" id="cursor" aria-hidden="true">
+      <span class="cursor__ring"></span>
+      <span class="cursor__dot"></span>
+      <span class="cursor__readout" id="cursorReadout">x:000 y:000</span>
+    </div>
+
+    <div class="scroll-ruler" aria-hidden="true">
+      <span class="scroll-ruler__fill" id="scrollFill"></span>
+    </div>
+
+    {
+      !bare && (
+        <header class="nav" id="nav">
+          <a class="nav__brand" href="#top" data-cursor="top">
+            <Monogram variant="sm" />
+            <span class="nav__name">ANTABLIN</span>
+          </a>
+          <nav class="nav__links" id="navLinks" aria-label="Primary">
+            {nav.map((item) => (
+              <a href={`#${item.id}`} data-cursor={item.label.toLowerCase()}>
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+            <span /> <span />
+          </button>
+        </header>
+      )
+    }
+
+    <slot />
+
+    {
+      !bare && (
+        <footer class="footer">
+          <div class="wrap footer__wrap">
+            <a class="footer__brand" href="#top" data-cursor="back to top">
+              <Monogram variant="sm" />
+              <span>ANTABLIN</span>
+            </a>
+            <p class="footer__copy">
+              © <span id="year">2026</span> {family.name}. Three fields, one name.
+            </p>
+            <p class="footer__meta">antablin.com · est. 2026</p>
+          </div>
+        </footer>
+      )
+    }
+
+    <script>
+      import "../scripts/boot.js";
+    </script>
+  </body>
+</html>

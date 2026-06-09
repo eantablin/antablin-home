@@ -1,0 +1,114 @@
+---
+import { family, members } from "../data/family";
+
+interface Props {
+  title: string;
+  description: string;
+  /** path only, e.g. "/" — resolved against the configured site */
+  path?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  /** emit the family + people JSON-LD graph (home page only) */
+  structuredData?: boolean;
+}
+
+const {
+  title,
+  description,
+  path = "/",
+  ogImage = "/assets/img/social-card.svg",
+  noindex = false,
+  structuredData = false,
+} = Astro.props;
+
+const site = Astro.site ?? new URL("https://www.antablin.com");
+const canonical = new URL(path, site).href;
+const ogImageAbs = new URL(ogImage, site).href;
+
+// Keywords span all three fields so the hub can rank across disciplines.
+const keywords = [
+  "Antablin",
+  "Antablin family",
+  "Emanuel Antablin",
+  "AI Engineer",
+  "agentic AI",
+  "LLM engineer",
+  "Richard Antablin",
+  "structural engineer",
+  "architectural engineer",
+  "Alexandra Antablin",
+  "biochemist",
+  "laboratory scientist",
+  "marine biology",
+  "portfolio",
+].join(", ");
+
+// JSON-LD: a WebSite, a CollectionPage listing the three makers, and a
+// Person node per maker linked to their own site + socials.
+const graph = structuredData
+  ? {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": `${site.origin}/#website`,
+          url: `${site.origin}/`,
+          name: family.name,
+          description: family.description,
+          inLanguage: "en",
+        },
+        {
+          "@type": "CollectionPage",
+          "@id": canonical,
+          url: canonical,
+          name: title,
+          description,
+          isPartOf: { "@id": `${site.origin}/#website` },
+          about: members.map((m) => ({ "@id": `${m.url}/#person` })),
+        },
+        ...members.map((m) => ({
+          "@type": "Person",
+          "@id": `${m.url}/#person`,
+          name: m.name,
+          givenName: m.shortName,
+          familyName: "Antablin",
+          jobTitle: m.jobTitle,
+          description: m.blurb,
+          url: m.url,
+          knowsAbout: m.knowsAbout,
+          ...(m.affiliation
+            ? { worksFor: { "@type": "Organization", name: m.affiliation.split(" · ")[0] } }
+            : {}),
+          sameAs: [m.url, ...m.socials.map((s) => s.href)],
+        })),
+      ],
+    }
+  : null;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="author" content={family.name} />
+<meta name="keywords" content={keywords} />
+<link rel="canonical" href={canonical} />
+{
+  noindex ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+  )
+}
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={family.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageAbs} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageAbs} />
+
+{graph && <script type="application/ld+json" set:html={JSON.stringify(graph)} />}

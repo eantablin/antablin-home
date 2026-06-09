@@ -1,5 +1,10 @@
 # Local Claude Code tooling / preview config
 .claude/
 
+# dependencies / build output
+node_modules/
+dist/
+.astro/
+
 # macOS
 .DS_Store

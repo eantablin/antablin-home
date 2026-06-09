@@ -1,5 +1,5 @@
 /* =====================================================================
-   main.js — orchestrator. Wires up interactions and picks the right
+   boot.js — orchestrator. Wires up interactions and picks the right
    hero renderer for the device (WebGL → 2D canvas → static).
    ===================================================================== */
 
@@ -41,10 +41,18 @@ async function startHero() {
   const canvas = document.getElementById("hero-canvas");
   if (!canvas) return;
 
+  // accents passed from the markup so the 3D matches the page palette
+  let accents = [];
+  try {
+    accents = JSON.parse(canvas.dataset.accents || "[]");
+  } catch (e) {
+    accents = [];
+  }
+
   if (supportsWebGL()) {
     try {
       const { initHero } = await import("./hero3d.js");
-      await initHero(canvas, { reduce: REDUCE, lowPower: LOW_POWER });
+      await initHero(canvas, { reduce: REDUCE, lowPower: LOW_POWER, accents });
       return;
     } catch (err) {
       console.warn("[antablin] WebGL hero failed — using 2D fallback.", err);
