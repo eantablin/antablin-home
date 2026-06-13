@@ -680,3 +680,31 @@ main { position: relative; z-index: 5; }
   .hero__canvas { opacity: 1; }
   .scroll-cue__line::after { display: none; }
 }
+
+/* =====================================================================
+   THE LAB — Helios callout
+   ===================================================================== */
+.lab-card {
+  --accent: #46e0ff; --accent-soft: #9cefff;
+  position: relative; display: grid; grid-template-columns: auto 1fr; gap: clamp(22px, 3vw, 42px);
+  align-items: center; margin-top: 6px; padding: clamp(26px, 3.6vw, 46px); border-radius: 6px;
+  background: linear-gradient(160deg, rgba(17,26,43,0.82), rgba(10,14,22,0.9));
+  border: 1px solid var(--gold-faint); overflow: hidden;
+  transition: border-color .5s var(--ease), box-shadow .5s var(--ease), transform .4s var(--ease);
+}
+.lab-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent 70%); opacity: .85; }
+.lab-card::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(560px circle at 14% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%); transition: opacity .5s var(--ease); }
+.lab-card:hover { border-color: color-mix(in srgb, var(--accent) 50%, var(--gold-faint)); box-shadow: 0 30px 80px -34px rgba(0,0,0,.7), 0 0 60px -26px color-mix(in srgb, var(--accent) 60%, transparent); }
+.lab-card:hover::after { opacity: 1; }
+.lab-card__glyph { width: 78px; height: 78px; display: grid; place-items: center; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.lab-card__glyph svg { width: 46px; height: 46px; }
+.lab-card__glyph circle { fill: var(--accent-soft); filter: drop-shadow(0 0 8px var(--accent)); }
+.lab-card__glyph .rays line { stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; transform-origin: 24px 24px; animation: lab-spin 16s linear infinite; }
+@keyframes lab-spin { to { transform: rotate(360deg); } }
+.lab-card__name { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 3vw, 2.1rem); letter-spacing: 2px; color: var(--text); margin-bottom: 8px; }
+.lab-card__tag { display: block; color: var(--muted); font-size: 15px; line-height: 1.65; max-width: 60ch; margin-bottom: 16px; }
+.lab-card__link { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 13px; color: var(--accent-soft); }
+.lab-card__link svg { width: 18px; height: 18px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .35s var(--ease); }
+.lab-card:hover .lab-card__link svg { transform: translateX(5px); }
+@media (max-width: 620px) { .lab-card { grid-template-columns: 1fr; text-align: left; } }
+@media (prefers-reduced-motion: reduce) { .lab-card__glyph .rays line { animation: none; } }
